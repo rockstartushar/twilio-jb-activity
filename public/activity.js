@@ -3,54 +3,71 @@ var connection = new Postmonger.Session();
 var payload = {};
 var inArgs = [];
 
+document.addEventListener('DOMContentLoaded', () => {
+  // tell JB that UI is loaded
+  connection.trigger('ready');
+  // show Next button enabled on step 1
+  connection.trigger('updateButton', { button: 'next', enabled: true });
+});
+
+// receive init from JB
 connection.on('initActivity', initialize);
 connection.on('requestedSchema', onRequestedSchema);
 connection.on('clickedNext', onClickedNext);
-connection.on('clickedBack', onClickedBack);
-connection.on('gotoStep', onGotoStep);
+connection.on('clickedBack', () => connection.trigger('prevStep'));
+connection.on('gotoStep', () => {}); // optional
 
 function initialize(data) {
   if (data) payload = data;
-  var hasInArgs = Boolean(
+
+  const hasInArgs = Boolean(
     payload.arguments &&
     payload.arguments.execute &&
     payload.arguments.execute.inArguments &&
-    payload.arguments.execute.inArguments.length > 0
+    payload.arguments.execute.inArguments.length
   );
+
   if (hasInArgs) {
     inArgs = payload.arguments.execute.inArguments;
-    document.getElementById('to').value = findArg('to') || '';
-    document.getElementById('body').value = findArg('body') || '';
-    document.getElementById('channel').value = findArg('channel') || 'sms';
+    setField('to', findArg('to') || '');
+    setField('body', findArg('body') || '');
+    setField('channel', findArg('channel') || 'sms');
   }
+
+  // request schema (optional)
   connection.trigger('requestSchema');
+  // make sure next is enabled (sometimes JB disables by default)
+  connection.trigger('updateButton', { button: 'next', enabled: true });
 }
 
 function onRequestedSchema(schema) {
-  // You can inspect schema if you want to populate a field picker
+  // optional: use schema to build a field picker
 }
 
 function onClickedNext() {
-  var to = document.getElementById('to').value || '{{Contact.Default.MobileNumber}}';
-  var body = document.getElementById('body').value || 'Hello!';
-  var channel = document.getElementById('channel').value || 'sms';
+  const to = getField('to') || '{{Contact.Default.MobileNumber}}';
+  const body = getField('body') || 'Hello!';
+  const channel = getField('channel') || 'sms';
 
+  payload.arguments = payload.arguments || {};
+  payload.arguments.execute = payload.arguments.execute || {};
   payload.arguments.execute.inArguments = [
     { "to": to },
     { "body": body },
     { "channel": channel }
   ];
+  payload.metaData = payload.metaData || {};
   payload.metaData.isConfigured = true;
+
   connection.trigger('updateActivity', payload);
 }
 
-function onClickedBack() {
-  connection.trigger('prevStep');
-}
-function onGotoStep() {}
-
 function findArg(name) {
-  for (var i=0;i<inArgs.length;i++){
+  for (var i = 0; i < inArgs.length; i++) {
     if (inArgs[i][name]) return inArgs[i][name];
   }
+  return null;
 }
+
+function setField(id, val){ var el = document.getElementById(id); if (el) el.value = val; }
+function getField(id){ var el = document.getElementById(id); return el ? el.value : ''; }
