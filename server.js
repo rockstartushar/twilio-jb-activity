@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/public', express.static('public'));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 const { TWILIO_SID, TWILIO_TOKEN, MSID, STATUS_CB, PORT=3000 } = process.env;
 const client = twilio(TWILIO_SID, TWILIO_TOKEN);
