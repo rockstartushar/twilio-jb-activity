@@ -2,8 +2,9 @@
 var connection = new Postmonger.Session();
 var payload = {};
 var inArgs = [];
-
+console.log('Activity JS loaded');
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM content loaded');
   // tell JB that UI is loaded
   connection.trigger('ready');
   // show Next button enabled on step 1
@@ -18,6 +19,7 @@ connection.on('clickedBack', () => connection.trigger('prevStep'));
 connection.on('gotoStep', () => {}); // optional
 
 function initialize(data) {
+  console.log('initActivity', JSON.stringify(data));
   if (data) payload = data;
 
   const hasInArgs = Boolean(
