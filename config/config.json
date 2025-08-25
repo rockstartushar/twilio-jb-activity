@@ -1,0 +1,51 @@
+{
+  "workflowApiVersion": "1.1",
+  "metaData": {
+    "icon": "https://assets.twilio.com/public_assets/marketing/twilio-icon.png",
+    "category": "message"
+  },
+  "type": "REST",
+  "lang": {
+    "en-US": {
+      "name": "Twilio SMS",
+      "description": "Send SMS via Twilio Messaging Service"
+    }
+  },
+  "arguments": {
+    "execute": {
+      "inArguments": [
+        { "to": "{{Contact.Default.MobileNumber}}" },
+        { "body": "Hello from Journey Builder!" },
+        { "jobId": "{{Context.Journey.ID}}" },
+        { "subscriberKey": "{{Contact.Key}}" }
+      ],
+      "outArguments": [],
+      "url": "{{Endpoint}}/execute",
+      "verb": "POST",
+      "timeout": 10000,
+      "retryCount": 2,
+      "retryDelay": 1000
+    }
+  },
+  "configurationArguments": {
+    "save": { "url": "{{Endpoint}}/save", "verb": "POST" },
+    "publish": { "url": "{{Endpoint}}/publish", "verb": "POST" },
+    "validate": { "url": "{{Endpoint}}/validate", "verb": "POST" },
+    "stop": { "url": "{{Endpoint}}/stop", "verb": "POST" }
+  },
+  "userInterfaces": {
+    "configModal": {
+      "height": 500,
+      "width": 480,
+      "url": "{{Endpoint}}/ui"
+    }
+  },
+  "wizardSteps": [
+    { "label": "Message" },
+    { "label": "Review" }
+  ],
+  "outcomes": [
+    { "arguments": { "branchResult": "ok" }, "metaData": { "label": "Sent" } },
+    { "arguments": { "branchResult": "error" }, "metaData": { "label": "Failed" } }
+  ]
+}

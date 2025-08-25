@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Twilio SMS Activity</title>
+  <style>
+    body { font-family: system-ui; padding: 16px; }
+    label { display:block; margin:10px 0 4px; }
+    input, textarea, select { width:100%; padding:8px; }
+    .row { margin-bottom:14px; }
+  </style>
+</head>
+<body>
+  <h2>Twilio SMS</h2>
+  <div class="row">
+    <label>Phone (To)</label>
+    <input id="to" placeholder="{{Contact.Default.MobileNumber}}" />
+  </div>
+  <div class="row">
+    <label>Message Body</label>
+    <textarea id="body" rows="4" placeholder="Hello {{FirstName}}!"></textarea>
+  </div>
+  <div class="row">
+    <label>Channel</label>
+    <select id="channel">
+      <option value="sms" selected>SMS</option>
+      <option value="wa">WhatsApp</option>
+    </select>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/postmonger/1.0.17/postmonger.min.js"></script>
+  <script src="/activity.js"></script>
+</body>
+</html>

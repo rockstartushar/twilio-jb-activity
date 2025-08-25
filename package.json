@@ -1,0 +1,16 @@
+{
+  "name": "twilio-jb-activity",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "twilio": "^5.3.3",
+    "uuid": "^9.0.1",
+    "cors": "^2.8.5"
+  }
+}
