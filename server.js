@@ -51,10 +51,10 @@ app.post('/execute', async (req,res)=>{
       : to;
 
     const msg = await client.messages.create({
-      to: toFinal,
-      messagingServiceSid: MSID,
-      body,
-      statusCallback: STATUS_CB
+      To: toFinal,
+      MessagingServiceSid: MSID,
+      Body: body,
+      StatusCallback: STATUS_CB
     });
 
     return res.json({ branchResult: 'ok', messageSid: msg.sid });
