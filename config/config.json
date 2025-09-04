@@ -1,26 +1,29 @@
 {
   "workflowApiVersion": "1.1",
+  "type": "REST",
   "metaData": {
     "icon": "https://assets.twilio.com/public_assets/marketing/twilio-icon.png",
     "category": "message"
   },
-  "type": "REST",
   "lang": {
     "en-US": {
-      "name": "Twilio SMS",
-      "description": "Send SMS via Twilio Messaging Service"
+      "name": "Twilio SMS/WhatsApp Activity",
+      "description": "Send personalized SMS or WhatsApp messages via Twilio Messaging Service"
     }
   },
   "arguments": {
     "execute": {
       "inArguments": [
         { "to": "{{Contact.Default.MobileNumber}}" },
-        { "body": "Hello from Journey Builder!" },
+        { "body": "Hello {{FirstName}}!" },
+        { "channel": "sms" },
         { "jobId": "{{Context.Journey.ID}}" },
+        { "journeyName": "{{Context.Journey.Name}}" },
+        { "activityId": "{{Activity.Id}}" },
         { "subscriberKey": "{{Contact.Key}}" }
       ],
       "outArguments": [],
-      "url": "https://twilio-jb-activity.onrender.com/execute",
+      "url": "{{Endpoint}}/execute",
       "verb": "POST",
       "timeout": 10000,
       "retryCount": 2,
@@ -28,16 +31,16 @@
     }
   },
   "configurationArguments": {
-    "save": { "url": "https://twilio-jb-activity.onrender.com/save", "verb": "POST" },
-    "publish": { "url": "https://twilio-jb-activity.onrender.com/publish", "verb": "POST" },
-    "validate": { "url": "https://twilio-jb-activity.onrender.com/validate", "verb": "POST" },
-    "stop": { "url": "https://twilio-jb-activity.onrender.com/stop", "verb": "POST" }
+    "save":     { "url": "{{Endpoint}}/save", "verb": "POST" },
+    "publish":  { "url": "{{Endpoint}}/publish", "verb": "POST" },
+    "validate": { "url": "{{Endpoint}}/validate", "verb": "POST" },
+    "stop":     { "url": "{{Endpoint}}/stop", "verb": "POST" }
   },
   "userInterfaces": {
     "configModal": {
       "height": 500,
       "width": 480,
-      "url": "https://twilio-jb-activity.onrender.com/ui"
+      "url": "{{Endpoint}}/ui"
     }
   },
   "wizardSteps": [
@@ -45,7 +48,13 @@
     { "label": "Review" }
   ],
   "outcomes": [
-    { "arguments": { "branchResult": "ok" }, "metaData": { "label": "Sent" } },
-    { "arguments": { "branchResult": "error" }, "metaData": { "label": "Failed" } }
+    {
+      "arguments": { "branchResult": "ok" },
+      "metaData": { "label": "Sent Successfully" }
+    },
+    {
+      "arguments": { "branchResult": "error" },
+      "metaData": { "label": "Delivery Failed" }
+    }
   ]
 }

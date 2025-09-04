@@ -1,33 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <title>Twilio SMS Activity</title>
   <style>
-    body { font-family: system-ui; padding: 16px; }
-    label { display:block; margin:10px 0 4px; }
-    input, textarea, select { width:100%; padding:8px; }
-    .row { margin-bottom:14px; }
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      background: #fafafa;
+      color: #333;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 4px;
+      font-weight: 600;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+    }
+    .row {
+      margin-bottom: 16px;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+    }
   </style>
 </head>
 <body>
-  <h2>Twilio SMS - SFMC</h2>
+  <h2>Twilio SMS – Salesforce Marketing Cloud</h2>
+
   <div class="row">
-    <label>Phone (To)</label>
-    <input id="to" placeholder="{{Contact.Default.MobileNumber}}" />
+    <label for="to">Phone (To)</label>
+    <input id="to" type="text" placeholder="{{Contact.Default.MobileNumber}}" />
   </div>
+
   <div class="row">
-    <label>Message Body</label>
-    <textarea id="body" rows="4" placeholder="New {{FirstName}} 2!"></textarea>
+    <label for="body">Message Body</label>
+    <textarea id="body" rows="4" placeholder="Hi {{FirstName}}, your order is confirmed!"></textarea>
   </div>
+
   <div class="row">
-    <label>Channel</label>
+    <label for="channel">Channel</label>
     <select id="channel">
       <option value="sms" selected>SMS</option>
       <option value="wa">WhatsApp</option>
     </select>
   </div>
-<script src="/public/postmonger.min.js"></script>
-<script src="/public/activity.js" defer></script>
+
+  <div class="footer">
+    <em>Configure your message and click Next in Journey Builder.</em>
+  </div>
+
+  <!-- Always use relative path without leading slash for Render static hosting -->
+  <script src="postmonger.min.js"></script>
+  <script src="activity.js" defer></script>
+  <script>
+    console.log("✅ index.html loaded");
+  </script>
 </body>
 </html>

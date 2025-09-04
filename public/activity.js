@@ -2,74 +2,86 @@
 var connection = new Postmonger.Session();
 var payload = {};
 var inArgs = [];
-console.log('Activity JS loaded');
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM content loaded');
-  // tell JB that UI is loaded
-  connection.trigger('ready');
-  // show Next button enabled on step 1
-  connection.trigger('updateButton', { button: 'next', enabled: true });
+
+console.log("✅ Activity JS loaded");
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ DOM loaded, notifying Journey Builder...");
+  connection.trigger("ready");
+  connection.trigger("updateButton", { button: "next", enabled: true });
 });
 
-// receive init from JB
-connection.on('initActivity', initialize);
-connection.on('requestedSchema', onRequestedSchema);
-connection.on('clickedNext', onClickedNext);
-connection.on('clickedBack', () => connection.trigger('prevStep'));
-connection.on('gotoStep', () => {}); // optional
+// Listen for JB events
+connection.on("initActivity", initialize);
+connection.on("requestedSchema", onRequestedSchema);
+connection.on("clickedNext", onClickedNext);
+connection.on("clickedBack", () => connection.trigger("prevStep"));
+connection.on("gotoStep", () => {}); // optional
 
+/**
+ * Initialize the activity with data from Journey Builder
+ */
 function initialize(data) {
-  console.log('initActivity', JSON.stringify(data));
+  console.log("🔄 initActivity:", JSON.stringify(data, null, 2));
   if (data) payload = data;
 
-  const hasInArgs = Boolean(
-    payload.arguments &&
-    payload.arguments.execute &&
-    payload.arguments.execute.inArguments &&
-    payload.arguments.execute.inArguments.length
-  );
+  const hasInArgs =
+    payload.arguments?.execute?.inArguments &&
+    payload.arguments.execute.inArguments.length > 0;
 
   if (hasInArgs) {
-    inArgs = payload.arguments.execute.inArguments;
-    setField('to', findArg('to') || '');
-    setField('body', findArg('body') || '');
-    setField('channel', findArg('channel') || 'sms');
+    inArgs = payload.arguments.execute.inArguments[0]; // use first object
+    setField("to", inArgs.to || "");
+    setField("body", inArgs.body || "");
+    setField("channel", inArgs.channel || "sms");
   }
 
-  // request schema (optional)
-  connection.trigger('requestSchema');
-  // make sure next is enabled (sometimes JB disables by default)
-  connection.trigger('updateButton', { button: 'next', enabled: true });
+  // Ask JB for schema (optional, useful for personalization fields)
+  connection.trigger("requestSchema");
+
+  // Ensure "Next" button is active
+  connection.trigger("updateButton", { button: "next", enabled: true });
 }
 
+/**
+ * Called when JB sends schema
+ */
 function onRequestedSchema(schema) {
-  // optional: use schema to build a field picker
+  console.log("📊 Requested Schema:", JSON.stringify(schema, null, 2));
+  // Could dynamically build dropdowns for fields here
 }
 
+/**
+ * Called when user clicks "Next" in Journey Builder
+ */
 function onClickedNext() {
-  const to = getField('to') || '{{Contact.Default.MobileNumber}}';
-  const body = getField('body') || 'Hello!';
-  const channel = getField('channel') || 'sms';
+  const to = getField("to") || "{{Contact.Default.MobileNumber}}";
+  const body = getField("body") || "Hello!";
+  const channel = getField("channel") || "sms";
 
+  // Store values back into payload
   payload.arguments = payload.arguments || {};
   payload.arguments.execute = payload.arguments.execute || {};
   payload.arguments.execute.inArguments = [
-    { "to": to },
-    { "body": body },
-    { "channel": channel }
+    { to, body, channel } // single object is cleaner
   ];
+
   payload.metaData = payload.metaData || {};
   payload.metaData.isConfigured = true;
 
-  connection.trigger('updateActivity', payload);
+  console.log("💾 Saving payload:", JSON.stringify(payload, null, 2));
+  connection.trigger("updateActivity", payload);
 }
 
-function findArg(name) {
-  for (var i = 0; i < inArgs.length; i++) {
-    if (inArgs[i][name]) return inArgs[i][name];
-  }
-  return null;
+/**
+ * Helpers
+ */
+function setField(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
 }
 
-function setField(id, val){ var el = document.getElementById(id); if (el) el.value = val; }
-function getField(id){ var el = document.getElementById(id); return el ? el.value : ''; }
+function getField(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : "";
+}
