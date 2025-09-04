@@ -52,7 +52,7 @@ app.post('/execute', async (req,res)=>{
 
     const msg = await client.messages.create({
       To: toFinal,
-      MessagingServiceSid: MSID,
+      MessagingServiceSid: TWILIO_SID,
       Body: body,
       StatusCallback: STATUS_CB
     });
