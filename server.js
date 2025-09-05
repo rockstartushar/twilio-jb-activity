@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config(); 
 const express = require("express");
 const bodyParser = require("body-parser");
 const twilio = require("twilio");
@@ -16,13 +16,14 @@ const {
   TWILIO_SID,
   TWILIO_TOKEN,
   MSID,
+  TWILIO_FROM,
   STATUS_CB,
   BASE_URL = "",
   PORT = 3000
 } = process.env;
 
-if (!TWILIO_SID || !TWILIO_TOKEN || !MSID) {
-  console.error("❌ Missing required environment variables (TWILIO_SID, TWILIO_TOKEN, MSID)");
+if (!TWILIO_SID || !TWILIO_TOKEN) {
+  console.error("❌ Missing required environment variables (TWILIO_SID, TWILIO_TOKEN)");
   process.exit(1);
 }
 
@@ -101,12 +102,21 @@ app.post("/execute", async (req, res) => {
 
     log("EXECUTE", `Parsed args -> to: ${toFinal}, body: "${body}", channel: ${channel}`);
 
-    const msg = await client.messages.create({
+    // Prepare message payload
+    var payload = {
       to: toFinal,
-      messagingServiceSid: MSID,
-      body,
-      statusCallback: STATUS_CB
-    });
+      body: body
+    };
+    log("EXECUTE", "Prepared payload", payload);
+    if (TWILIO_FROM) {
+      payload.from = TWILIO_FROM;
+      log("EXECUTE", `Using From number: ${TWILIO_FROM}`);
+    } else {
+      log("EXECUTE ERROR", "No MSID or TWILIO_FROM configured");
+      return res.status(500).json({ branchResult: "error", error: "No MSID or TWILIO_FROM configured" });
+    }
+
+    const msg = await client.messages.create(payload);
 
     log("EXECUTE", `Message sent successfully. SID: ${msg.sid}`);
 

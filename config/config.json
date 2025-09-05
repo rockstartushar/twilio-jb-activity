@@ -22,7 +22,10 @@
         { "activityId": "{{Activity.Id}}" },
         { "subscriberKey": "{{Contact.Key}}" }
       ],
-      "outArguments": [],
+      "outArguments": [
+        { "messageSid": "" },
+        { "status": "" }
+      ],
       "url": "{{Endpoint}}/execute",
       "verb": "POST",
       "timeout": 10000,
