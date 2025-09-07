@@ -2,7 +2,7 @@
   "workflowApiVersion": "1.1",
   "type": "REST",
   "metaData": {
-    "icon": "https://assets.twilio.com/public_assets/marketing/twilio-icon.png",
+    "icon": "https://logo.svgcdn.com/l/twilio-icon.svg",
     "category": "message"
   },
   "lang": {

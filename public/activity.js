@@ -55,6 +55,7 @@ function onRequestedSchema(schema) {
  * Called when user clicks "Next" in Journey Builder
  */
 function onClickedNext() {
+  console.log("➡️ Next clicked, saving data...");
   const to = getField("to") || "{{Contact.Default.MobileNumber}}";
   const body = getField("body") || "Hello!";
   const channel = getField("channel") || "sms";
