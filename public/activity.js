@@ -48,7 +48,7 @@ function initialize(data) {
  */
 function onRequestedSchema(schema) {
   console.log("📊 Requested Schema:", JSON.stringify(schema, null, 2));
-  // Could dynamically build dropdowns for fields here
+  // Could dynamically build dropdowns for fields her
 }
 
 /**
