@@ -26,7 +26,7 @@
         { "messageSid": "" },
         { "status": "" }
       ],
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/execute",
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/journeybuilder/execute",
       "verb": "POST",
       "timeout": 10000,
       "retryCount": 2,
