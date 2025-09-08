@@ -89,7 +89,7 @@ app.post("/execute", async (req, res) => {
     const to = getArg(inArgs, "to");
     const body = getArg(inArgs, "body") || "Hello from Twilio!";
     const channel = (getArg(inArgs, "channel") || "sms").toLowerCase();
-
+    console.log("inArgs", inArgs, to, body, channel);
     if (!to) {
       log("EXECUTE ERROR", "Missing recipient phone number");
       return res.status(400).json({ branchResult: "error", error: "Missing 'to' phone number" });

@@ -13,7 +13,9 @@
   },
   "arguments": {
     "execute": {
-      "inArguments": [],
+      "inArguments": [{
+        "phone": "{{Contact.Default.MobileNumber}}"
+      }],
       "outArguments": [],
       "url": "https://twilio-jb-activity-production-5924.up.railway.app/execute",
       "verb": "POST",
