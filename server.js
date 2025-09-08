@@ -71,7 +71,7 @@ app.get("/ui", (_, res) => {
 /**
  * Lifecycle routes
  */
-["save", "publish", "validate", "stop", "execute"].forEach((action) => {
+["save", "publish", "validate", "stop", "journeybuilder/execute"].forEach((action) => {
   app.post(`/${action}`, (req, res) => {
     log("LIFECYCLE", `${action} called`, req.body);
     res.json({ status: "ok", action });

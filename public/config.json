@@ -5,8 +5,7 @@
     "icon": "https://logo.svgcdn.com/l/twilio-icon.svg",
     "category": "message"
   },
-  "type": "REST",
-  "lang": {
+    "lang": {
     "en-US": {
       "name": "Twilio SMS Updated",
       "description": "Send personalized SMS or WhatsApp messages via Twilio Messaging Service"
