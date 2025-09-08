@@ -82,7 +82,7 @@ app.get("/ui", (_, res) => {
  * Execute: send SMS / WhatsApp
  */
 app.post("/execute", async (req, res) => {
-  log("EXECUTE", "Incoming request", req);
+  log("EXECUTE", "Incoming request", req.body);
 
   try {
     const inArgs = (req.body && req.body.inArguments) || [];
