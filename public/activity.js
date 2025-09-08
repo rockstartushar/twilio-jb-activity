@@ -2,6 +2,7 @@
 var connection = new Postmonger.Session();
 var payload = {};
 var inArgs = [];
+var schemaFields = [];
 
 console.log("✅ Activity JS loaded");
 
@@ -9,6 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ DOM loaded, notifying Journey Builder...");
   connection.trigger("ready");
   connection.trigger("updateButton", { button: "next", enabled: true });
+
+  // Insert personalization field on dropdown change
+  document
+    .getElementById("insertField")
+    ?.addEventListener("change", (e) => {
+      const field = e.target.value;
+      if (field) {
+        insertAtCursor(document.getElementById("body"), field);
+        e.target.value = ""; // reset dropdown
+      }
+    });
 });
 
 // Listen for JB events
@@ -36,7 +48,7 @@ function initialize(data) {
     setField("channel", inArgs.channel || "sms");
   }
 
-  // Ask JB for schema (optional, useful for personalization fields)
+  // Ask JB for schema (for personalization fields)
   connection.trigger("requestSchema");
 
   // Ensure "Next" button is active
@@ -48,7 +60,20 @@ function initialize(data) {
  */
 function onRequestedSchema(schema) {
   console.log("📊 Requested Schema:", JSON.stringify(schema, null, 2));
-  // Could dynamically build dropdowns for fields her
+  schemaFields = schema?.schema || [];
+
+  const dropdown = document.getElementById("insertField");
+  if (!dropdown) return;
+
+  // Reset dropdown
+  dropdown.innerHTML = '<option value="">Insert Personalization</option>';
+
+  schemaFields.forEach((f) => {
+    const option = document.createElement("option");
+    option.value = `{{${f.key}}}`;
+    option.textContent = `${f.name} (${f.key})`;
+    dropdown.appendChild(option);
+  });
 }
 
 /**
@@ -85,4 +110,15 @@ function setField(id, val) {
 function getField(id) {
   const el = document.getElementById(id);
   return el ? el.value.trim() : "";
+}
+
+function insertAtCursor(field, text) {
+  if (!field) return;
+  const start = field.selectionStart;
+  const end = field.selectionEnd;
+  const before = field.value.substring(0, start);
+  const after = field.value.substring(end, field.value.length);
+  field.value = before + text + after;
+  field.selectionStart = field.selectionEnd = start + text.length;
+  field.focus();
 }
