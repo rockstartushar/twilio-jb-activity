@@ -94,7 +94,7 @@ app.post("/execute", async (req, res) => {
       return res.status(400).json({ branchResult: "error", error: "Missing 'to' phone number" });
     }
 
-    log("EXECUTE", `Parsed args -> to: ${toFinal}, body: "${body}");
+    log("EXECUTE", `Parsed args -> to: ${toFinal}, body: "${body}"`);
 
     // Prepare message payload
     var payload = {
