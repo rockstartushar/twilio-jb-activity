@@ -15,7 +15,7 @@
     "execute": {
       "inArguments": [],
       "outArguments": [],
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/journeybuilder/execute",
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/execute",
       "verb": "POST",
       "body": "",
       "format": "json",
