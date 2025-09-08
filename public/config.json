@@ -16,7 +16,7 @@
       "inArguments": [{
           "phone": "{{Contact.Default.MobileNumber}}",
           "firstName": "{{Contact.Default.FirstName}}",
-          "message": "Hi {{Contact.Default.FirstName}}, Hey!"
+          "body": "Hi {{Contact.Default.FirstName}}, Hey!"
       }],
       "outArguments": [],
       "url": "https://twilio-jb-activity-production-5924.up.railway.app/execute",
