@@ -33,24 +33,14 @@
   },
   "userInterfaces": {
     "configModal": {
-      "height": 500,
-      "width": 480,
+      "height": 600,
+      "width": 800,
       "url": "https://twilio-jb-activity-production-5924.up.railway.app/ui"
     }
   },
   "wizardSteps": [
     { "label": "Message" },
     { "label": "Review" }
-  ],
-  "outcomes": [
-    {
-      "arguments": { "branchResult": "ok" },
-      "metaData": { "label": "Sent Successfully" }
-    },
-    {
-      "arguments": { "branchResult": "error" },
-      "metaData": { "label": "Delivery Failed" }
-    }
   ],
   "schema": {
     "arguments": {
