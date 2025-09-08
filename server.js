@@ -82,11 +82,12 @@ app.get("/ui", (_, res) => {
  * Execute: send SMS / WhatsApp
  */
 app.post("/execute", async (req, res) => {
-  log("EXECUTE", "Incoming request", req.body);
+  log("EXECUTE", "Incoming request New");
 
   try {
     const inArgs = (req.body && req.body.inArguments) || [];
     const to = getArg(inArgs, "to");
+    console.log("In Arg", inArgs);
     const body = getArg(inArgs, "body") || "Hello from Twilio!";
     console.log("inArgs", inArgs, to, body);
     if (!to) {
