@@ -81,7 +81,7 @@ app.get("/ui", (_, res) => {
 /**
  * Execute: send SMS / WhatsApp
  */
-app.post("/execute", (req, res) => {
+app.post("/execute", async (req, res) => {
   log("EXECUTE", "Incoming request", req);
 
   try {
