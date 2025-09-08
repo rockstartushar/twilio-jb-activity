@@ -88,24 +88,18 @@ app.post("/execute", async (req, res) => {
     const inArgs = (req.body && req.body.inArguments) || [];
     const to = getArg(inArgs, "to");
     const body = getArg(inArgs, "body") || "Hello from Twilio!";
-    const channel = (getArg(inArgs, "channel") || "sms").toLowerCase();
-    console.log("inArgs", inArgs, to, body, channel);
+    console.log("inArgs", inArgs, to, body);
     if (!to) {
       log("EXECUTE ERROR", "Missing recipient phone number");
       return res.status(400).json({ branchResult: "error", error: "Missing 'to' phone number" });
     }
 
-    const toFinal =
-      channel === "wa" || channel === "whatsapp"
-        ? to.startsWith("whatsapp:") ? to : `whatsapp:${to}`
-        : to;
-
-    log("EXECUTE", `Parsed args -> to: ${toFinal}, body: "${body}", channel: ${channel}`);
+    log("EXECUTE", `Parsed args -> to: ${toFinal}, body: "${body}");
 
     // Prepare message payload
     var payload = {
-      to: toFinal,
-      body: body
+      to,
+      body
     };
     log("EXECUTE", "Prepared payload", payload);
     if (TWILIO_FROM) {
