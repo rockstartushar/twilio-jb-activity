@@ -1,0 +1,80 @@
+{
+  "workflowApiVersion": "1.1",
+  "type": "REST",
+  "metaData": {
+    "icon": "https://logo.svgcdn.com/l/twilio-icon.svg",
+    "category": "message"
+  },
+  "type": "REST",
+  "lang": {
+    "en-US": {
+      "name": "Twilio SMS Updated",
+      "description": "Send personalized SMS or WhatsApp messages via Twilio Messaging Service"
+    }
+  },
+  "arguments": {
+    "execute": {
+      "inArguments": [],
+      "outArguments": [],
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/journeybuilder/execute",
+      "verb": "POST",
+      "body": "",
+      "format": "json",
+      "timeout": 9000,
+      "useJwt": false
+    }
+  },
+  "configurationArguments": {
+    "save":     { 
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/save",     
+      "verb": "POST", 
+      "body": "",
+      "format": "json",
+      "useJwt": false,
+      "timeout": 2000 
+      },
+    "publish":  {
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/publish",
+      "verb": "POST",
+      "body": "",
+      "format": "json",
+      "useJwt": false,
+      "timeout": 2000
+      },
+    "validate": {
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/validate",
+      "verb": "POST",
+      "body": "",
+      "format": "json",
+      "useJwt": false,
+      "timeout": 2000
+      },
+    "stop":     {
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/stop",
+      "verb": "POST",
+      "body": "",
+      "format": "json",
+      "useJwt": false,
+      "timeout": 2000
+      }
+  },
+  "userInterfaces": {
+    "configModal": {
+      "height": 600,
+      "width": 800,
+      "url": "https://twilio-jb-activity-production-5924.up.railway.app/ui"
+    }
+  },
+  "wizardSteps": [
+    { "label": "Message" },
+    { "label": "Review" }
+  ],
+  "schema": {
+    "arguments": {
+      "execute": {
+        "inArguments": [],
+        "outArguments": []
+      }
+    }
+  }
+}

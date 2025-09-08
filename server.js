@@ -50,7 +50,7 @@ app.get("/", (_, res) => {
 app.get("/config.json", (_, res) => {
   log("CONFIG", "Serving config.json");
   try {
-    let cfg = fs.readFileSync("./config/config.json", "utf8");
+    let cfg = fs.readFileSync("./public/config.json", "utf8");
     cfg = cfg.replace(/{{Endpoint}}/g, BASE_URL);
     res.setHeader("Content-Type", "application/json");
     res.send(cfg);
