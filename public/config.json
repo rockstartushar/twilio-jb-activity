@@ -66,8 +66,7 @@
     }
   },
   "wizardSteps": [
-    { "label": "Message" },
-    { "label": "Review" }
+    { "label": "Message" }
   ],
   "schema": {
     "arguments": {
