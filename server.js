@@ -71,7 +71,7 @@ app.get("/ui", (_, res) => {
 /**
  * Lifecycle routes
  */
-["save", "publish", "validate", "stop", "journeybuilder/execute"].forEach((action) => {
+["save", "publish", "validate", "stop", "journeybuilder/execute/"].forEach((action) => {
   app.post(`/${action}`, (req, res) => {
     log("LIFECYCLE", `${action} called`, req.body);
     res.json({ status: "ok", action });
@@ -81,7 +81,7 @@ app.get("/ui", (_, res) => {
 /**
  * Execute: send SMS / WhatsApp
  */
-app.post("/journeybuilder/execute", async (req, res) => {
+app.post("/journeybuilder/execute/", async (req, res) => {
   log("EXECUTE", "Incoming request", req);
 
   try {
