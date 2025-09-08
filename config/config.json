@@ -14,23 +14,15 @@
   "arguments": {
     "execute": {
       "inArguments": [
-        { "to": "{{Contact.Default.MobileNumber}}" },
-        { "body": "Hello {{FirstName}}!" },
-        { "channel": "sms" },
-        { "jobId": "{{Context.Journey.ID}}" },
-        { "journeyName": "{{Context.Journey.Name}}" },
-        { "activityId": "{{Activity.Id}}" },
-        { "subscriberKey": "{{Contact.Key}}" }
+        { "to": "{{Contact.Default.MobileNumber}}" }
       ],
-      "outArguments": [
-        { "messageSid": "" },
-        { "status": "" }
-      ],
+      "outArguments": [],
       "url": "https://twilio-jb-activity-production-5924.up.railway.app/journeybuilder/execute",
       "verb": "POST",
-      "timeout": 10000,
-      "retryCount": 2,
-      "retryDelay": 1000
+      "body": "",
+      "format": "json",
+      "timeout": 2000,
+      "useJwt": false
     }
   },
   "configurationArguments": {
