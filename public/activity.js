@@ -66,7 +66,7 @@ function onRequestedSchema(schema) {
   if (!dropdown) return;
 
   // Reset dropdown
-  dropdown.innerHTML = '<option value="">Insert Personalization</option>';
+  dropdown.innerHTML = '<option value="">Insert Merge Fields</option>';
 
   schemaFields.forEach((f) => {
     const option = document.createElement("option");
