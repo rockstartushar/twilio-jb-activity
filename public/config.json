@@ -18,7 +18,11 @@
           "firstName": "{{Contact.Default.FirstName}}",
           "body": "Hi {{Contact.Default.FirstName}}, Hey!"
       }],
-      "outArguments": [],
+      "outArguments": [
+        {
+        "branchResult": ""
+      }
+      ],
       "url": "https://twilio-jb-activity-production-5924.up.railway.app/execute",
       "verb": "POST",
       "body": "",
