@@ -20,7 +20,7 @@
       }],
       "outArguments": [
         {
-        "branchResult": ""
+        "branchResult": "Testing"
       }
       ],
       "url": "https://twilio-jb-activity-production-5924.up.railway.app/execute",
