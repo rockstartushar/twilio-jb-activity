@@ -84,16 +84,17 @@ app.get("/ui", (_, res) => {
 app.post("/execute", async (req, res) => {
   log("EXECUTE", "Incoming request New");
 
+  let to, body, memberId, customerKey;
+
   try {
     const inArgs = (req.body && req.body.inArguments) || [];
-    const to = getArg(inArgs, "to");
-    const body = getArg(inArgs, "body") || "Hello from Twilio!";
-    const memberId = getArg(inArgs, "memberId");
-    const customerKey = getArg(inArgs, "customerKey");
+    to = getArg(inArgs, "to");
+    body = getArg(inArgs, "body") || "Hello from Twilio!";
+    memberId = getArg(inArgs, "memberId");
+    customerKey = getArg(inArgs, "customerKey");
 
     if (!to) {
-      log("EXECUTE ERROR", "Missing recipient phone number");
-      return res.status(400).json({ branchResult: "error", error: "Missing 'to' phone number" });
+      throw new Error("Missing 'to' phone number");
     }
 
     log("EXECUTE", `Parsed args -> to: ${to}, body: "${body}"`);
@@ -104,50 +105,20 @@ app.post("/execute", async (req, res) => {
       payload.from = process.env.TWILIO_FROM;
       log("EXECUTE", `Using From number: ${process.env.TWILIO_FROM}`);
     } else {
-      log("EXECUTE ERROR", "No TWILIO_FROM configured");
-      return res.status(500).json({ branchResult: "error", error: "No TWILIO_FROM configured" });
+      throw new Error("No TWILIO_FROM configured");
     }
 
     // 1. Send SMS via Twilio
     const msg = await client.messages.create(payload);
     log("EXECUTE", `Message sent successfully. SID: ${msg.sid}`);
 
-    // 2. Update DE in SFMC
-    const sfmcAccessToken = await getSFMCAuthToken();
-    const deExternalKey = process.env.SFMC_DE_KEY;
-
-    const updateBody = [
-      {
-        keys: {
-          MemberId: memberId || "Unknown"
-        },
-        values: {
-          Status: true,
-          CustomerSubscriberKey: customerKey || "Unknown",
-          MessageSid: msg.sid
-        }
-      }
-    ];
-
-    const response = await fetch(
-      `${process.env.SFMC_REST_BASE}/hub/v1/dataevents/key:${deExternalKey}/rowset`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${sfmcAccessToken}`
-        },
-        body: JSON.stringify(updateBody)
-      }
-    );
-
-    if (!response.ok) {
-      const errText = await response.text();
-      log("EXECUTE ERROR", "DE update failed", errText);
-      return res.status(500).json({ branchResult: "error", error: "Failed to update Data Extension" });
-    }
-
-    log("EXECUTE", "Data Extension updated successfully");
+    // 2. Update DE with success
+    await updateDEStatus({
+      memberId,
+      customerKey,
+      status: "Sent",
+      messageSid: msg.sid
+    });
 
     return res.json({
       branchResult: "ok",
@@ -156,9 +127,55 @@ app.post("/execute", async (req, res) => {
 
   } catch (err) {
     log("EXECUTE ERROR", err);
+
+    // Try to update DE with error
+    try {
+      await updateDEStatus({
+        memberId,
+        customerKey,
+        status: `Error: ${err.message}`
+      });
+    } catch (deErr) {
+      log("EXECUTE ERROR", "Failed to update DE with error", deErr);
+    }
+
     return res.status(500).json({ branchResult: "error", error: err.message });
   }
 });
+async function updateDEStatus({ memberId = "Unknown", customerKey = "Unknown", status, messageSid = "" }) {
+  const sfmcAccessToken = await getSFMCAuthToken();
+  const deExternalKey = process.env.SFMC_DE_KEY;
+
+  const updateBody = [
+    {
+      keys: { MemberId: memberId },
+      values: {
+        Status: status,
+        CustomerSubscriberKey: customerKey,
+        MessageSid: messageSid
+      }
+    }
+  ];
+
+  const response = await fetch(
+    `${process.env.SFMC_REST_BASE}/hub/v1/dataevents/key:${deExternalKey}/rowset`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${sfmcAccessToken}`
+      },
+      body: JSON.stringify(updateBody)
+    }
+  );
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Failed to update Data Extension: ${errText}`);
+  }
+
+  log("DE UPDATE", `Data Extension updated successfully with status: ${status}`);
+}
 
 async function getSFMCAuthToken() {
   const resp = await fetch(`${process.env.SFMC_AUTH_BASE}/v2/token`, {
