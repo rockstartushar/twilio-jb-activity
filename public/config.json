@@ -14,11 +14,11 @@
   "arguments": {
     "execute": {
       "inArguments": [{
-          "phone": "{{Contact.Default.MobileNumber}}",
           "firstName": "{{Contact.Default.FirstName}}",
           "body": "Hi {{Contact.Default.FirstName}}",
           "memberid": "{{Event.DEAudience-e73b9092-d77d-3114-8e15-7bga15g69g18.MemberId}}",
-          "campaignname": "Onboarding Journey"
+          "campaignname": "Onboarding Journey",
+          "to":"{{Contact.Default.MobileNumber}}"
       }],
       "outArguments": [
         {
