@@ -142,16 +142,16 @@ app.post("/execute", async (req, res) => {
     return res.status(500).json({ branchResult: "error", error: err.message });
   }
 });
-async function updateDEStatus({ memberId = "Unknown", customerKey = "Unknown", status, messageSid = "" }) {
+async function updateDEStatus({ memberId, customerKey, status, messageSid = "" }) {
   const sfmcAccessToken = await getSFMCAuthToken();
   const deExternalKey = process.env.SFMC_DE_KEY;
 
   const updateBody = [
     {
-      keys: { MemberId: memberId },
+      keys: { MemberId: memberId || "Unknown" },   // <---- SAFE DEFAULT
       values: {
-        Status: status,
-        CustomerSubscriberKey: customerKey,
+        Status: status || "Unknown",
+        CustomerSubscriberKey: customerKey || "Unknown",
         MessageSid: messageSid
       }
     }
@@ -176,6 +176,7 @@ async function updateDEStatus({ memberId = "Unknown", customerKey = "Unknown", s
 
   log("DE UPDATE", `Data Extension updated successfully with status: ${status}`);
 }
+
 
 async function getSFMCAuthToken() {
   const resp = await fetch(`${process.env.SFMC_AUTH_BASE}/v2/token`, {
