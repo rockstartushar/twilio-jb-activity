@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Twilio SMS Activity</title>
+  <title>Hutch SMS Activity</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -40,7 +40,22 @@
   </style>
 </head>
 <body>
-  <h2>SMS Activity</h2>
+  <h2>Hutch SMS Activity</h2>
+  <div class="row">
+    <label for="to">Campaign Name</label>
+    <input id="to" type="text" placeholder="Example: Onboarding Journey" />
+  </div>
+  <div class="row">
+    <label for="memberid">Member Id</label>
+    <input id="memberid" type="text" placeholder="Example: sdsfdfere" />
+  </div>
+  <div class="row">
+    <label for="selectMask">Select Mask</label>
+
+    <select id="selectMask">
+      <option value="Keellsnexus" default="true">Keellsnexus</option>
+    </select>
+  </div>
   <div class="row">
     <label for="insertField">Insert Merge Fields</label>
 
@@ -51,18 +66,18 @@
 
   <div class="row">
     <label for="to">Phone (To)</label>
-    <input id="to" type="text" placeholder="{{Contact.Default.MobileNumber}}" />
+    <input id="to" type="text" placeholder="{{Event.DEAudience-e73b9092-d77d-3114-8e15-7bga15g69g18.MobileNumber}}" />
   </div>
 
   <div class="row">
     <label for="body">Message Body</label>
-    <textarea id="body" rows="4" placeholder="Hi {{FirstName}}, your order is confirmed!"></textarea>
+    <textarea id="body" rows="4" placeholder="Hi {{Event.DEAudience-e73b9092-d77d-3114-8e15-7bga15g69g18.MobileNumber}}, Your points are left to redeem!"></textarea>
   </div>
 
   
 
   <div class="footer">
-    <em>Configure your message and click Next in Journey Builder.</em>
+    <em>Configure your message and click Done in Journey Builder.</em>
   </div>
 
   <!-- Always use relative path without leading slash for Render static hosting -->

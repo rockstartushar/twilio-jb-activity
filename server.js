@@ -79,7 +79,7 @@ app.get("/ui", (_, res) => {
 });
 
 /**
- * Execute: send SMS / WhatsApp
+ * Execute: send SMS / WhatsApp + update Data Extension
  */
 app.post("/execute", async (req, res) => {
   log("EXECUTE", "Incoming request New");
@@ -87,9 +87,10 @@ app.post("/execute", async (req, res) => {
   try {
     const inArgs = (req.body && req.body.inArguments) || [];
     const to = getArg(inArgs, "to");
-    console.log("In Arg", inArgs);
     const body = getArg(inArgs, "body") || "Hello from Twilio!";
-    console.log("inArgs", inArgs, to, body);
+    const memberId = getArg(inArgs, "memberId");
+    const customerKey = getArg(inArgs, "customerKey");
+
     if (!to) {
       log("EXECUTE ERROR", "Missing recipient phone number");
       return res.status(400).json({ branchResult: "error", error: "Missing 'to' phone number" });
@@ -97,30 +98,88 @@ app.post("/execute", async (req, res) => {
 
     log("EXECUTE", `Parsed args -> to: ${to}, body: "${body}"`);
 
-    // Prepare message payload
-    var payload = {
-      to,
-      body
-    };
-    log("EXECUTE", "Prepared payload", payload);
-    if (TWILIO_FROM) {
-      payload.from = TWILIO_FROM;
-      log("EXECUTE", `Using From number: ${TWILIO_FROM}`);
+    const payload = { to, body };
+
+    if (process.env.TWILIO_FROM) {
+      payload.from = process.env.TWILIO_FROM;
+      log("EXECUTE", `Using From number: ${process.env.TWILIO_FROM}`);
     } else {
-      log("EXECUTE ERROR", "No MSID or TWILIO_FROM configured");
-      return res.status(500).json({ branchResult: "error", error: "No MSID or TWILIO_FROM configured" });
+      log("EXECUTE ERROR", "No TWILIO_FROM configured");
+      return res.status(500).json({ branchResult: "error", error: "No TWILIO_FROM configured" });
     }
 
+    // 1. Send SMS via Twilio
     const msg = await client.messages.create(payload);
-
     log("EXECUTE", `Message sent successfully. SID: ${msg.sid}`);
 
-    return res.json({ branchResult: "ok", messageSid: msg.sid });
+    // 2. Update DE in SFMC
+    const sfmcAccessToken = await getSFMCAuthToken();
+    const deExternalKey = process.env.SFMC_DE_KEY;
+
+    const updateBody = [
+      {
+        keys: {
+          MemberId: memberId || "Unknown"
+        },
+        values: {
+          Status: true,
+          CustomerSubscriberKey: customerKey || "Unknown",
+          MessageSid: msg.sid
+        }
+      }
+    ];
+
+    const response = await fetch(
+      `${process.env.SFMC_REST_BASE}/hub/v1/dataevents/key:${deExternalKey}/rowset`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${sfmcAccessToken}`
+        },
+        body: JSON.stringify(updateBody)
+      }
+    );
+
+    if (!response.ok) {
+      const errText = await response.text();
+      log("EXECUTE ERROR", "DE update failed", errText);
+      return res.status(500).json({ branchResult: "error", error: "Failed to update Data Extension" });
+    }
+
+    log("EXECUTE", "Data Extension updated successfully");
+
+    return res.json({
+      branchResult: "ok",
+      messageSid: msg.sid
+    });
+
   } catch (err) {
     log("EXECUTE ERROR", err);
     return res.status(500).json({ branchResult: "error", error: err.message });
   }
 });
+
+async function getSFMCAuthToken() {
+  const resp = await fetch(`${process.env.SFMC_AUTH_BASE}/v2/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      grant_type: "client_credentials",
+      client_id: process.env.SFMC_CLIENT_ID,
+      client_secret: process.env.SFMC_CLIENT_SECRET
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error(`Failed to get SFMC access token: ${err}`);
+  }
+
+  const data = await resp.json();
+  return data.access_token;
+}
+
 
 /**
  * Twilio callbacks
