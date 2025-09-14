@@ -2,7 +2,7 @@
   "workflowApiVersion": "1.1",
   "type": "REST",
   "metaData": {
-    "icon": "https://logo.svgcdn.com/l/twilio-icon.svg",
+    "icon": "{{Endpoint}}/src/hutch-seeklogo.png",
     "category": "message"
   },
     "lang": {
@@ -25,7 +25,7 @@
         "branchResult": "Testing"
       }
       ],
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/execute",
+      "url": "{{Endpoint}}/execute",
       "verb": "POST",
       "body": "",
       "format": "json",
@@ -35,7 +35,7 @@
   },
   "configurationArguments": {
     "save":     { 
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/save",     
+      "url": "{{Endpoint}}/save",     
       "verb": "POST", 
       "body": "",
       "format": "json",
@@ -43,7 +43,7 @@
       "timeout": 2000 
       },
     "publish":  {
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/publish",
+      "url": "{{Endpoint}}/publish",
       "verb": "POST",
       "body": "",
       "format": "json",
@@ -51,7 +51,7 @@
       "timeout": 2000
       },
     "validate": {
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/validate",
+      "url": "{{Endpoint}}/validate",
       "verb": "POST",
       "body": "",
       "format": "json",
@@ -59,7 +59,7 @@
       "timeout": 2000
       },
     "stop":     {
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/stop",
+      "url": "{{Endpoint}}/stop",
       "verb": "POST",
       "body": "",
       "format": "json",
@@ -71,7 +71,7 @@
     "configModal": {
       "height": 600,
       "width": 800,
-      "url": "https://twilio-jb-activity-production-5924.up.railway.app/ui"
+      "url": "{{Endpoint}}/ui"
     }
   },
   "wizardSteps": [

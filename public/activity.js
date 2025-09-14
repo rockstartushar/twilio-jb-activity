@@ -13,14 +13,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Insert personalization field on dropdown change
   document
-    .getElementById("insertField")
-    ?.addEventListener("change", (e) => {
-      const field = e.target.value;
-      if (field) {
-        insertAtCursor(document.getElementById("body"), field);
-        e.target.value = ""; // reset dropdown
-      }
-    });
+  .getElementById("insertField")
+  ?.addEventListener("change", (e) => {
+    const field = e.target.value;
+    if (field) {
+      document.getElementById("copy").value = field; // 👈 put into copy box
+      e.target.value = ""; // reset dropdown
+    }
+  });
+  // 📋 Copy button functionality
+  const copyBtn = document.getElementById("copyBtn");
+  copyBtn?.addEventListener("click", () => {
+    const val = document.getElementById("copy").value;
+    if (val) {
+      navigator.clipboard.writeText(val).then(() => {
+        console.log("📋 Copied to clipboard:", val);
+        copyBtn.textContent = "✅";
+        setTimeout(() => (copyBtn.textContent = "📋"), 1000);
+      });
+    }
+  });
 });
 
 // Listen for JB events

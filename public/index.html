@@ -1,89 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Hutch SMS Activity</title>
   <style>
+    /* Base Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: system-ui, sans-serif;
-      padding: 20px;
-      background: #fafafa;
-      color: #333;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f5f7fa;
+      color: #1f2937;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 50px 20px;
     }
-    h2 {
-      margin-bottom: 20px;
+
+    /* Card */
+    .container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 20px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      padding: 36px 32px 40px;
+      animation: fadeIn 0.4s ease;
     }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      text-align: center;
+      color: #111827;
+      margin-bottom: 32px;
+      letter-spacing: -0.2px;
+    }
+
+    .row {
+      margin-bottom: 22px;
+    }
+
     label {
       display: block;
-      margin: 10px 0 4px;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
       font-weight: 600;
+      color: #374151;
     }
-    input, textarea, select {
+
+    input,
+    textarea,
+    select {
       width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-      box-sizing: border-box;
+      padding: 11px 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      background: #f9fafb;
     }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      background: #ffffff;
+    }
+
     textarea {
       resize: vertical;
+      min-height: 100px;
     }
-    .row {
-      margin-bottom: 16px;
+
+    /* Merge field copy row */
+    .merge-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
+
+    #copy {
+      flex: 1;
+      background: #f3f4f6;
+    }
+
+    #copyBtn {
+      padding: 10px 12px;
+      border: none;
+      border-radius: 10px;
+      background: #c0c2c6;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    #copyBtn:hover {
+      background: #dfe4f1;
+    }
+
+    .copy-hint {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+
+    /* Footer */
     .footer {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #777;
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #9ca3af;
     }
   </style>
 </head>
+
 <body>
-  <h2>Hutch SMS Activity</h2>
-  <div class="row">
-    <label for="selectMask">Select Mask</label>
+  <div class="container">
+    <h2 class="title">📩 Hutch SMS Activity</h2>
 
-    <select id="selectMask">
-      <option value="Keellsnexus" default="true">Keellsnexus</option>
-    </select>
-  </div>
-  <div class="row">
-    <label for="campaignName">Campaign Name</label>
-    <input id="campaignName" type="text" placeholder="Example: Onboarding Journey" />
-  </div>
-  <div class="row">
-    <label for="memberid">Member Id</label>
-    <input id="memberid" type="text" placeholder="Example: sdsfdfere" />
-  </div>
-  <div class="row">
-    <label for="insertField">Insert Merge Fields</label>
+    <div class="row">
+      <label for="selectMask">Sender Mask</label>
+      <select id="selectMask">
+        <option value="Keellsnexus" selected>Keellsnexus</option>
+      </select>
+    </div>
 
-    <select id="insertField">
-      <option value="">-- Select a field --</option>
-    </select>
+    <div class="row">
+      <label for="insertField">Available Merge Fields</label>
+      <select id="insertField">
+        <option value="">-- Choose a field --</option>
+        <option value="Test1">Test 1</option>
+        <option value="Test2">Test 2</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label for="copy">Selected Field</label>
+      <div class="merge-row">
+        <input id="copy" type="text" readonly placeholder="Selected field will appear here" />
+        <button id="copyBtn" type="button" title="Copy to clipboard">📋</button>
+      </div>
+      <div class="copy-hint">Use this merge field to personalize your message</div>
+    </div>
+
+    <div class="row">
+      <label for="campaignName">Campaign Name</label>
+      <input id="campaignName" type="text" placeholder="Example: Onboarding Journey" />
+    </div>
+
+    <div class="row">
+      <label for="to">Recipient Phone Number</label>
+      <input id="to" type="text" placeholder="{{Event.DEAudience-xyz.MobileNumber}}" />
+    </div>
+
+    <div class="row">
+      <label for="body">Message Content</label>
+      <textarea id="body"
+        placeholder="Hi {{Event.DEAudience-xyz.FirstName}}, you have points left to redeem!"></textarea>
+    </div>
+
+    <div class="footer">
+      <em>Configure your message and click Done in Journey Builder.</em>
+    </div>
   </div>
 
-  <div class="row">
-    <label for="to">Phone (To)</label>
-    <input id="to" type="text" placeholder="{{Event.DEAudience-e73b9092-d77d-3114-8e15-7bga15g69g18.MobileNumber}}" />
-  </div>
-
-  <div class="row">
-    <label for="body">Message Body</label>
-    <textarea id="body" rows="4" placeholder="Hi {{Event.DEAudience-e73b9092-d77d-3114-8e15-7bga15g69g18.MobileNumber}}, Your points are left to redeem!"></textarea>
-  </div>
-
-  
-
-  <div class="footer">
-    <em>Configure your message and click Done in Journey Builder.</em>
-  </div>
-
-  <!-- Always use relative path without leading slash for Render static hosting -->
   <script src="public/postmonger.min.js"></script>
   <script src="public/activity.js" defer></script>
-  <script>
-    console.log("✅ index.html loaded");
-  </script>
 </body>
+
+</html>
